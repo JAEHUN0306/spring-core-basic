@@ -1,6 +1,6 @@
 package hello.core.singleton;
 
-public class StatefulService {
+public class StatefulService1 {
     private int price; // 상태를 유지하는 필드
 
     public void order(String name, int price) {
