@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
@@ -30,16 +32,12 @@ public class SingletonWithPrototypeTest1 {
 
         ClientBean bean1 = ac.getBean(ClientBean.class);
         int logic1 = bean1.logic();
-        PrototypeBean prototypeBean = bean1.getPrototypeBean();
-        System.out.println("prototypeBean = " + prototypeBean);
-        ClientBean bean2 = ac.getBean(ClientBean.class);
 
+        ClientBean bean2 = ac.getBean(ClientBean.class);
         int logic2 = bean2.logic();
-        PrototypeBean prototypeBean2 = bean2.getPrototypeBean();
-        System.out.println("prototypeBean2 = " + prototypeBean2);
 
         Assertions.assertThat(logic1).isEqualTo(1);
-        Assertions.assertThat(logic2).isEqualTo(2);
+        Assertions.assertThat(logic2).isEqualTo(1);
     }
 
     @Scope("prototype")
@@ -67,17 +65,12 @@ public class SingletonWithPrototypeTest1 {
 
     @Scope
     static class ClientBean {
-        private final PrototypeBean prototypeBean;
 
-        public PrototypeBean getPrototypeBean() {
-            return prototypeBean;
-        }
-
-        public ClientBean(PrototypeBean prototypeBean) {
-            this.prototypeBean = prototypeBean;
-        }
+        @Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider;
 
         public int logic() {
+            PrototypeBean prototypeBean = prototypeBeanProvider.getObject();
             prototypeBean.addCount();
             return prototypeBean.getCount();
         }
