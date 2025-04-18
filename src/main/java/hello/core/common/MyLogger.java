@@ -24,7 +24,7 @@ public class MyLogger {
 
     @PostConstruct
     public void init() {
-        uuid = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID().toString().substring(0, 6);
         System.out.println("[" + uuid + "] request scope bean create: " + this);
     }
 
